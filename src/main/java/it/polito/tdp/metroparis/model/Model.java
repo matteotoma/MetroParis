@@ -1,13 +1,16 @@
 package it.polito.tdp.metroparis.model;
 
 import java.util.ArrayList;
+
 import java.util.HashMap;
 
 import java.util.List;
 import java.util.Map;
 
 import org.jgrapht.Graph;
+import org.jgrapht.GraphPath;
 import org.jgrapht.Graphs;
+import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.event.ConnectedComponentTraversalEvent;
 import org.jgrapht.event.EdgeTraversalEvent;
 import org.jgrapht.event.TraversalListener;
@@ -138,6 +141,14 @@ public class Model {
 		return albero;
 	}
 	
+	public List<Fermata> camminiMinimi(Fermata partenza, Fermata arrivo) {
+		DijkstraShortestPath<Fermata, DefaultEdge> dij = new DijkstraShortestPath<>(graph);
+		
+		GraphPath<Fermata, DefaultEdge> cammino = dij.getPath(partenza, arrivo);
+		
+		return cammino.getVertexList();
+	}
+	
 	public static void main(String args[]) {
 		Model m = new Model();
 		
@@ -150,6 +161,9 @@ public class Model {
 		Map<Fermata, Fermata> albero = m.alberoVisita(m.fermate.get(0));
 		for(Fermata f: albero.keySet())
 			System.out.format("%s <--- %s\n", f, albero.get(f));
+		
+		List<Fermata> cammino = m.camminiMinimi(m.fermate.get(0), m.fermate.get(1));
+		System.out.println(cammino);
 	}
 
 }
